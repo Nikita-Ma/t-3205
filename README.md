@@ -17,7 +17,6 @@ npm install
 * DUMP.sql (execute commands)
 * ``~t-3205/server | npm run dev // run server``
 * ``~t-3205/cleint | npm run start // run client``
-*
 
 ## TODO
 

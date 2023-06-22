@@ -15,7 +15,6 @@ export const getUser = async (req: Request<{}, {}, {}, UserInterface>, res: Resp
     const regexNumber = /^[0-9-]+$/;
     const regexEmail = /^\S+@\S+\.\S+$/;
     setTimeout(async () => {
-        console.log(req.query.number.split('').filter((item) => item !== '-').join(''))
         // guard
         if (regexNumber.test(req.query.number) && regexEmail.test(req.query.email) && req.query.number.split("").filter((item) => item !== "-").length === 6) {
 
