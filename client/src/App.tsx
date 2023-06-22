@@ -7,8 +7,9 @@ function App() {
         email: "",
         number: "",
     });
-    const [response, setResponse] = useState<{ message: string | [] }>({
-        message: '' || []
+    const [response, setResponse] = useState<{ data: any, loading: boolean }>({
+        data: [],
+        loading: false
     });
     const handleSubmit = (e: React.FormEvent) => {
 
@@ -16,25 +17,24 @@ function App() {
 
         async function sendRequest() {
 
-            if (abortController) {
-                abortController.abort();
-            }
-
             abortController = new AbortController();
 
             try {
-                const response = await fetch(`http://localhost:7575/api/find-user?email=${formData.email}&number=${formData.number}`,
+                if (response.loading) {
+                    abortController.abort()
+                }
+                setResponse({data: ['abort'], loading: true})
+                const resData = await fetch(`http://localhost:7575/api/find-user?email=${formData.email}&number=${formData.number || 'null'}`,
                     {signal: abortController.signal});
-                const data = await response.json();
-                setResponse({message: data})
+                const dataRes = await resData.json();
+                setResponse({data: dataRes, loading: false})
             } catch (error: any) {
                 if (error.name === "AbortError") {
                     console.log("Request cancel");
-                    setResponse({message: "Request cancel"})
+                    setResponse({data: ["Request cancel"], loading: false})
 
                 } else {
                     console.log("Have error", error);
-                    setResponse({message: error.message})
                 }
             }
         }
@@ -76,6 +76,7 @@ function App() {
             }));
         }
     };
+
     const handlerInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Backspace") {
             e.preventDefault();
@@ -85,6 +86,7 @@ function App() {
             }));
         }
     };
+
     return (
         <>
             <form onSubmit={handleSubmit}>
@@ -98,7 +100,15 @@ function App() {
                 <button type={"submit"}>Submit</button>
             </form>
             {
-                response ? response.message : null
+                response ? response.data.map((item: any) => {
+                    return (
+                        <div key={item.id}>
+                            <span>ID: {item.id}</span> &nbsp;
+                            <span>Email: {item.email}</span> &nbsp;
+                            <span>Number: {item.number}</span> &nbsp;
+                            <hr/>
+                        </div>)
+                }) : null
             }
         </>
     );

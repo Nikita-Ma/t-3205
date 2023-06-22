@@ -1,3 +1,5 @@
+import userRoutes from "./routes/userRoutes";
+
 require('dotenv').config()
 
 
@@ -25,6 +27,7 @@ app.use(cors());
 app.get('/', (req: Request, res: Response) => {
     res.json('Server running')
 })
+app.use('/api/find-user', userRoutes)
 
 // use custom middlewares
 app.use(notFound)
